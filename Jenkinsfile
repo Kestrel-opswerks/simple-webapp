@@ -100,10 +100,10 @@ pipeline {
                     sh 'git checkout -b test || git checkout test'
 
                     // Add the new files to Git
-                    sh 'git add webapp-canary.yml webapp.yml'
+                    sh 'git add webapp-canary.yml webapp.yml version.txt'
 
                     // Commit the changes with a message
-                    sh 'git commit -m "Add webapp-canary.yml and webapp.yml files with updated version and background color"'
+                    sh 'git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"'
 
                     // Push the changes to the test branch
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
