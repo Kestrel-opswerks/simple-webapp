@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image with the new version tag
-                    docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}")
+                    docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}", "webapp/")
                 }
             }
         }
