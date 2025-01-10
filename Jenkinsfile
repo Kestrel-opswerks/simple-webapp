@@ -5,7 +5,7 @@ pipeline {
         // Define your Docker registry and image name
         DOCKER_REGISTRY = 'docker.io'  // Docker Hub
         IMAGE_NAME = 'jeromeevangelista/simple-webapp'  // Your image name on Docker Hub
-        DOCKER_CREDENTIALS = 'dockerhub-credentials-id'  // Jenkins credentials ID for Docker login
+        DOCKER_CREDENTIALS = 'docker-creds'  // Jenkins credentials ID for Docker login
     }
 
     stages {
