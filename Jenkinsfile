@@ -73,6 +73,52 @@ pipeline {
             }
         }
 
+        stage('Manipulate Files') {
+            steps {
+                script {
+                    // Extract background color from webapp/templates/index.html
+                    def backgroundColor = sh(script: "grep -o 'background-color:[^']*' webapp/templates/index.html | cut -d ':' -f 2 | tr -d ' '", returnStdout: true).trim()
+                    echo "Extracted background color: ${backgroundColor}"
+
+                    // Read and modify the template file
+                    def templateFile = readFile('manifests/v1/template-webapp')
+                    def updatedFile = templateFile.replace("{{color}}", backgroundColor).replace("{{tag}}", VERSION)
+
+                    // Save the updated file as webapp-canary.yml and webapp.yml
+                    writeFile file: 'webapp-canary.yml', text: updatedFile
+                    writeFile file: 'webapp.yml', text: updatedFile
+
+                    echo "Replaced placeholders in template and saved to webapp-canary.yml and webapp.yml"
+                }
+            }
+        }
+
+        stage('Commit and Push to Test Branch') {
+            steps {
+                script {
+                    // Checkout to the test branch
+                    sh 'git checkout -b test || git checkout test'
+
+                    // Add the new files to Git
+                    sh 'git add webapp-canary.yml webapp.yml'
+
+                    // Commit the changes with a message
+                    sh 'git commit -m "Add webapp-canary.yml and webapp.yml files with updated version and background color"'
+
+                    // Push the changes to the test branch
+                    withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh """
+                            git config user.name '${GIT_USER}'
+                            git config user.email 'franz.lopez@academy.opswerks.com'
+                            git push https://${GIT_USER}:${GIT_PASSWORD}@github.com/your-org/your-repo.git test
+                        """
+                    }
+
+                    echo "Files committed and pushed to the test branch"
+                }
+            }
+        }
+
         stage('Clean Up') {
             steps {
                 script {
