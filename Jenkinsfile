@@ -82,7 +82,9 @@ pipeline {
 
                     // Read and modify the template file
                     def templateFile = readFile('manifests/v1/template-webapp')
+                    echo "Good"
                     def updatedFile = templateFile.replace("{{color}}", backgroundColor).replace("{{tag}}", VERSION)
+                    echo "Gooder"
 
                     // Save the updated file as webapp-canary.yml and webapp.yml
                     writeFile file: 'webapp-canary.yml', text: updatedFile
