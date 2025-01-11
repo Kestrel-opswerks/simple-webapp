@@ -104,7 +104,7 @@ pipeline {
 
                     // Commit the changes with a message
                     sh 'git commit -m "Add webapp-canary.yml and webapp.yml files with updated version and background color"'
-
+                    echo "Pushing to Repo"
                     // Push the changes to the test branch
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                         sh """
