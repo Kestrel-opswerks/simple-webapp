@@ -107,6 +107,12 @@ pipeline {
                     // Commit the changes with a message
                     sh 'git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"'
 
+                    withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh """
+                            git config user.name '${GIT_USER}'
+                            git config user.email 'franz.lopez@academy.opswerks.com'
+                        """
+                    }
                     // Push the changes to the test branch
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                         sh """
