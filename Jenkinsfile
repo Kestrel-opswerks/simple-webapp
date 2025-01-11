@@ -77,7 +77,7 @@ pipeline {
             steps {
                 script {
                     // Extract background color from webapp/templates/index.html
-                    def backgroundColor = sh(script: "grep -o 'background-color:[^"]*" webapp/templates/index.html | cut -d ":" -f 2 | tr -d " "', returnStdout: true).trim()
+                    def backgroundColor = sh(script: "grep -o 'background-color:[^\"]*" webapp/templates/index.html | cut -d ":" -f 2 | tr -d " "', returnStdout: true).trim()
                     echo "Extracted background color: ${backgroundColor}"
 
                     // Read and modify the template file
