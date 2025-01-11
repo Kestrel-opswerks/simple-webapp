@@ -112,7 +112,7 @@ pipeline {
                         sh """
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
-                            git push https://${GIT_USER}:${GIT_PASSWORD}@github.com/your-org/your-repo.git test
+                            git push https://${GIT_USER}:${GIT_PASSWORD}@github.com/Kestrel-opswerks/simple-webapp.git test
                         """
                     }
 
