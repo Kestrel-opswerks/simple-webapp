@@ -108,7 +108,7 @@ pipeline {
                         sh """
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
-                            // Commit the changes with a message
+                            
                             git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"
 
                         """
