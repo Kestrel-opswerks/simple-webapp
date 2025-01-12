@@ -99,7 +99,7 @@ pipeline {
             steps {
                 script {
                     // Checkout to the test branch
-                    sh 'git checkout -b test || git checkout test'
+                    sh 'git checkout -b main || git checkout main'
                     // Add the new files to Git
                     sh 'git add webapp-canary.yml webapp.yml version.txt'
 
