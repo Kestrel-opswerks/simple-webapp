@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-webapp
+  namespace: simple-webapp
+  labels:
+    color: green
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: simple-webapp
+      type: production
+  template:
+    metadata:
+      labels:
+        app: simple-webapp
+        type: production
+	color: green
+    spec:
+      containers:
+        - image: 'jeromeevangelista/simple-webapp:0.0.2'
+          name: simple-webapp
+          ports:
+            - containerPort: 8000
+              name: web
+            - containerPort: 8080
+              name: metrics
