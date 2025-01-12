@@ -87,8 +87,8 @@ pipeline {
                     echo "Gooder"
 
                     // Save the updated file as webapp-canary.yml and webapp.yml
-                    writeFile file: 'webapp-canary.yml', text: updatedFile
-                    writeFile file: 'webapp.yml', text: updatedFile
+                    writeFile file: 'manifests/v1/webapp-canary.yml', text: updatedFile
+                    writeFile file: 'manifests/v1/webapp.yml', text: updatedFile
 
                     echo "Replaced placeholders in template and saved to webapp-canary.yml and webapp.yml"
                 }
