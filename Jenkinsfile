@@ -117,7 +117,7 @@ pipeline {
                         sh """
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
-                            git push
+                            git push origin main
                         """
                     }
 
