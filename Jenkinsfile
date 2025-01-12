@@ -100,7 +100,7 @@ pipeline {
                 script {
                     // Checkout to the test branch
                     sh 'git checkout -b test || git checkout test'
-
+                    sh 'sudo chown -R 1000:1000 .'
                     // Add the new files to Git
                     sh 'git add webapp-canary.yml webapp.yml version.txt'
 
@@ -109,7 +109,7 @@ pipeline {
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
                             // Commit the changes with a message
-                            sudo git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"
+                            git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"
 
                         """
                     }
