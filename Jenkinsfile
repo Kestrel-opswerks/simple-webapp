@@ -5,6 +5,10 @@ pipeline {
         DOCKER_REGISTRY = 'docker.io'  // Docker Hub
         IMAGE_NAME = 'jeromeevangelista/simple-webapp'  // Image name on Docker Hub
         DOCKER_CREDENTIALS = 'docker-creds'  // Jenkins credentials ID for Docker login
+
+        // MinIO Configuration (internal DNS)
+        MINIO_URL = 'http://minio-service.minio.svc.cluster.local:9000'  // Use internal DNS
+        MINIO_BUCKET = 'simple-webapp'  // MinIO bucket name
     }
 
     stages {
@@ -120,6 +124,31 @@ pipeline {
                     }
 
                     echo "Files committed and pushed to the remote main branch"
+                }
+            }
+        }
+
+        stage('Upload Files to MinIO') {
+            steps {
+                script {
+
+                    echo 'Configuring MinIO client (mc) with the internal DNS for minio service'
+
+                    // Fetch MinIO credentials from Jenkins and configure mc
+                    withCredentials([usernamePassword(credentialsId: 'minio-credentials', usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
+                        // Configure mc to access MinIO
+                        sh """
+                            mc alias set myminio ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
+                        """
+
+                        echo 'Upload webapp.yml and webapp-canary.yml to MinIO bucket'
+                        sh """
+                            mc cp manifests/v1/webapp.yml myminio/${MINIO_BUCKET}/webapp.yml
+                            mc cp manifests/v1/webapp-canary.yml myminio/${MINIO_BUCKET}/webapp-canary.yml
+                        """
+
+                        echo 'Files uploaded to MinIO successfully'
+                    }
                 }
             }
         }
