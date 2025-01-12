@@ -99,21 +99,21 @@ pipeline {
                     sh 'git add manifests/v1/webapp-canary.yml manifests/v1/webapp.yml version.txt'
 
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                        sh """
+                        sh '''
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
                             git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"
-                        """
+                        '''
                     }
 
                     echo 'Commit changes to local'
 
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
-                        sh """
+                        sh '''
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
                             git push https://${GIT_USER}:${GIT_PASSWORD}@github.com/Kestrel-opswerks/simple-webapp.git main
-                        """
+                        '''
                     }
 
                     echo "Files committed and pushed to the remote main branch"
