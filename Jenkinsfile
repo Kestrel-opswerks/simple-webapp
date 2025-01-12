@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // Define your Docker registry and image name
         DOCKER_REGISTRY = 'docker.io'  // Docker Hub
-        IMAGE_NAME = 'jeromeevangelista/simple-webapp'  // Your image name on Docker Hub
+        IMAGE_NAME = 'jeromeevangelista/simple-webapp'  // Image name on Docker Hub
         DOCKER_CREDENTIALS = 'docker-creds'  // Jenkins credentials ID for Docker login
     }
 
@@ -12,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout the code from the GitHub repository
+                    echo 'Checkout the code from the GitHub repository'
                     checkout scm
                 }
             }
@@ -21,20 +20,19 @@ pipeline {
         stage('Get Current Version') {
             steps {
                 script {
-                    // Check if version.txt exists and read the version from it
+                    echo 'Check if version.txt exists and read the version from it'
                     if (fileExists('version.txt')) {
                         VERSION = readFile('version.txt').trim()
                     } else {
-                        // Default version if version.txt doesn't exist
-                        VERSION = '0.0.1'
+                        VERSION = '1.0.0'
                     }
 
-                    // Increment the version (assumes version format: x.y.z)
+                    echo 'Increment the version'
                     def versionParts = VERSION.tokenize('.')
                     def patch = versionParts[2].toInteger() + 1
                     VERSION = "${versionParts[0]}.${versionParts[1]}.${patch}"
 
-                    // Save the incremented version back to version.txt
+                    echo 'Save version.txt'
                     writeFile file: 'version.txt', text: VERSION
 
                     echo "Current version: ${VERSION}"
@@ -45,7 +43,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image with the new version tag
+                    echo 'Build the Docker image with the new version tag'
                     docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}", "webapp/")
                 }
             }
@@ -54,9 +52,8 @@ pipeline {
         stage('Login to Docker Registry') {
             steps {
                 script {
-                    // Login to Docker registry (Docker Hub)
+                    echo 'Login to Docker Hub'
                     docker.withRegistry('', DOCKER_CREDENTIALS) {
-                        // This will use the credentials stored in Jenkins
                     }
                 }
             }
@@ -65,7 +62,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the Docker image to Docker Hub with the version tag
+                    echo 'Push the Docker image'
                     docker.withRegistry('', DOCKER_CREDENTIALS) {
                         docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}").push()
                     }
@@ -76,17 +73,15 @@ pipeline {
         stage('Manipulate Files') {
             steps {
                 script {
-                    // Extract background color from webapp/templates/index.html
+                    echo 'Extract background color'
                     def backgroundColor = sh(script: "grep -o 'background-color:[^\\\"]*' webapp/templates/index.html | cut -d ':' -f 2 | tr -d ' '", returnStdout: true).trim()
                     echo "Extracted background color: ${backgroundColor}"
 
-                    // Read and modify the template file
+                    echo 'Read and modify the template file'
                     def templateFile = readFile('manifests/v1/template-webapp')
-                    echo "Good"
                     def updatedFile = templateFile.replace("{{color}}", backgroundColor).replace("{{tag}}", VERSION)
-                    echo "Gooder"
 
-                    // Save the updated file as webapp-canary.yml and webapp.yml
+                    echo 'Save the updated file as webapp-canary.yml and webapp.yml'
                     writeFile file: 'manifests/v1/webapp-canary.yml', text: updatedFile
                     writeFile file: 'manifests/v1/webapp.yml', text: updatedFile
 
@@ -98,21 +93,21 @@ pipeline {
         stage('Commit and Push to Test Branch') {
             steps {
                 script {
-                    // Checkout to the test branch
+                    echo 'Checkout to the main branch'
                     sh 'git checkout -b main || git checkout main'
-                    // Add the new files to Git
+                    echo 'Add the new files to Git'
                     sh 'git add manifests/v1/webapp-canary.yml manifests/v1/webapp.yml version.txt'
 
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                         sh """
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
-                            
                             git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"
-
                         """
                     }
-                    // Push the changes to the test branch
+
+                    echo 'Commit changes to local'
+
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                         sh """
                             git config user.name '${GIT_USER}'
@@ -121,7 +116,7 @@ pipeline {
                         """
                     }
 
-                    echo "Files committed and pushed to the test branch"
+                    echo "Files committed and pushed to the remote main branch"
                 }
             }
         }
@@ -129,7 +124,7 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    // Remove locally stored Docker images to free up space
+                    echo 'Remove local Docker images'
                     sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${VERSION}"
                 }
             }
@@ -138,7 +133,7 @@ pipeline {
 
     post {
         always {
-            // Clean up the workspace after the build, no matter if it succeeds or fails
+            echo 'Clean up the workspace after the build'
             cleanWs()
         }
         success {
