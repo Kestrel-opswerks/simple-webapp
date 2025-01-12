@@ -8,11 +8,8 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
   https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 RUN apt-get update && apt-get install -y docker-ce-cli
-RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc \
-  --create-dirs \
-  -o $HOME/minio-binaries/mc
-
-RUN chmod +x $HOME/minio-binaries/mc
-RUN export PATH=$PATH:$HOME/minio-binaries/
+RUN curl -O https://dl.min.io/client/mc/release/linux-amd64/mc \
+    && chmod +x mc \
+    && mv mc /usr/local/bin/mc
 USER jenkins
 RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
