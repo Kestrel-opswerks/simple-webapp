@@ -101,7 +101,7 @@ pipeline {
                     // Checkout to the test branch
                     sh 'git checkout -b main || git checkout main'
                     // Add the new files to Git
-                    sh 'git add webapp-canary.yml webapp.yml version.txt'
+                    sh 'git add manifests/v1/webapp-canary.yml manifests/v1/webapp.yml version.txt'
 
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                         sh """
