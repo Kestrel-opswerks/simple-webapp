@@ -1,16 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        genericWebhookTrigger(
-            causeString: 'Triggered on PR merge into main',
-            printContributedVariables: true,  // Useful for debugging
-            printPostContent: true,  // Useful for debugging
-            webhookHeaders: ['X-GitHub-Event': 'pull_request'],  // You can specify headers if needed
-            jsonPathFilter: '$.action == "closed" && $.pull_request.merged == true && $.pull_request.base.ref == "main"'
-        )
-    }
-
     environment {
         DOCKER_REGISTRY = 'docker.io'  // Docker Hub
         IMAGE_NAME = 'jeromeevangelista/simple-webapp'  // Image name on Docker Hub
