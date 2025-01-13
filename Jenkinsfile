@@ -86,10 +86,12 @@ pipeline {
 
                     echo 'Read and modify the template file'
                     def templateFile = readFile('manifests/v1/template-webapp')
+                    def templateFile2 = readFile('manifests/v1/template-canary')
                     def updatedFile = templateFile.replace("{{color}}", backgroundColor).replace("{{tag}}", VERSION)
+                    def updatedFile2 = templateFile2.replace("{{color}}", backgroundColor).replace("{{tag}}", VERSION)
 
                     echo 'Save the updated file as webapp-canary.yml and webapp.yml'
-                    writeFile file: 'manifests/v1/canary.yml', text: updatedFile
+                    writeFile file: 'manifests/v1/canary.yml', text: updatedFile2
                     writeFile file: 'manifests/v1/production.yml', text: updatedFile
 
                     echo "Replaced placeholders in template and saved to webapp-canary.yml and webapp.yml"
