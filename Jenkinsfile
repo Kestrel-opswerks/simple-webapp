@@ -153,6 +153,14 @@ pipeline {
             }
         }
 
+        stage('Send Trigger to Spinnaker') {
+            steps {
+                script {
+                    sh "curl spin-gate.spinnaker:8084/webhooks/webhook/test -X POST -H \"content-type: application/json\" -d '{ \"parameters\": { \"version\": \"${VERSION}\" } }'"
+                }
+            }
+        }
+
         stage('Clean Up') {
             steps {
                 script {
