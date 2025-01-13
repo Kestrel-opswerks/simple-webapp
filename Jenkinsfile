@@ -7,7 +7,7 @@ pipeline {
         DOCKER_CREDENTIALS = 'docker-creds'  // Jenkins credentials ID for Docker login
 
         // MinIO Configuration (internal DNS)
-        MINIO_URL = 'http://minio-service.minio.svc.cluster.local:9000'  // Use internal DNS
+        MINIO_URL = 'http://minio.minio.svc.cluster.local:9000'  // Use internal DNS
         MINIO_BUCKET = 'simple-webapp'  // MinIO bucket name
     }
 
