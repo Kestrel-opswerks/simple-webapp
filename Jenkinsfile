@@ -28,7 +28,7 @@ pipeline {
                     if (fileExists('version.txt')) {
                         VERSION = readFile('version.txt').trim()
                     } else {
-                        VERSION = '1.0.0'
+                        VERSION = 'latest'
                     }
 
                     echo "Current version: ${VERSION}"
@@ -96,7 +96,6 @@ pipeline {
                 script {
 
                     echo 'Configuring MinIO client (mc) with the internal DNS for minio service'
-                    echo '##################### Check if tama yung internal DNS'
 
                     withCredentials([usernamePassword(credentialsId: 'minio-creds', usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
                         sh """
@@ -118,7 +117,6 @@ pipeline {
         stage('Send Trigger to Spinnaker') {
             steps {
                 script {
-                    echo '#################################### Check if tama yung name ng job ng spinnaker'
                     sh "curl spin-gate.spinnaker:8084/webhooks/webhook/simple-webapp-deploy -X POST -H \"content-type: application/json\" -d '{ \"parameters\": { \"version\": \"${VERSION}\" } }'"
                 }
             }
