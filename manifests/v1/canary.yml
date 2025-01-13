@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simple-webapp
+  name: canary-simple-webapp
   namespace: simple-webapp
   labels:
     color: green
@@ -10,16 +10,16 @@ spec:
   selector:
     matchLabels:
       app: simple-webapp
-      type: production
+      type: canary
   template:
     metadata:
       labels:
         app: simple-webapp
-        type: production
+        type: canary
         color: green
     spec:
       containers:
-        - image: 'jeromeevangelista/simple-webapp:1.0.16'
+        - image: 'jeromeevangelista/simple-webapp:1.0.17'
           name: simple-webapp
           ports:
             - containerPort: 8000

@@ -19,7 +19,7 @@ spec:
         color: green
     spec:
       containers:
-        - image: 'jeromeevangelista/simple-webapp:1.0.16'
+        - image: 'jeromeevangelista/simple-webapp:1.0.17'
           name: simple-webapp
           ports:
             - containerPort: 8000
