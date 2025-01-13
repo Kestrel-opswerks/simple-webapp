@@ -16,10 +16,10 @@ spec:
       labels:
         app: simple-webapp
         type: production
-	color: green
+        color: green
     spec:
       containers:
-        - image: 'jeromeevangelista/simple-webapp:1.0.15'
+        - image: 'jeromeevangelista/simple-webapp:1.0.16'
           name: simple-webapp
           ports:
             - containerPort: 8000
