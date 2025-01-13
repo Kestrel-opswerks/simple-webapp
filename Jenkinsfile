@@ -135,7 +135,7 @@ pipeline {
                     echo 'Configuring MinIO client (mc) with the internal DNS for minio service'
 
                     // Fetch MinIO credentials from Jenkins and configure mc
-                    withCredentials([usernamePassword(credentialsId: 'minio-credentials', usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
+                    withCredentials([usernamePassword(credentialsId: 'minio-creds', usernameVariable: 'MINIO_ACCESS_KEY', passwordVariable: 'MINIO_SECRET_KEY')]) {
                         // Configure mc to access MinIO
                         sh """
                             mc alias set myminio ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
