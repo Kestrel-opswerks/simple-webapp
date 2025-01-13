@@ -89,8 +89,8 @@ pipeline {
                     def updatedFile = templateFile.replace("{{color}}", backgroundColor).replace("{{tag}}", VERSION)
 
                     echo 'Save the updated file as webapp-canary.yml and webapp.yml'
-                    writeFile file: 'manifests/v1/webapp-canary.yml', text: updatedFile
-                    writeFile file: 'manifests/v1/webapp.yml', text: updatedFile
+                    writeFile file: 'manifests/v1/canary.yml', text: updatedFile
+                    writeFile file: 'manifests/v1/production.yml', text: updatedFile
 
                     echo "Replaced placeholders in template and saved to webapp-canary.yml and webapp.yml"
                 }
@@ -103,13 +103,13 @@ pipeline {
                     echo 'Checkout to the main branch'
                     sh 'git checkout -b main || git checkout main'
                     echo 'Add the new files to Git'
-                    sh 'git add manifests/v1/webapp-canary.yml manifests/v1/webapp.yml version.txt'
+                    sh 'git add manifests/v1/canary.yml manifests/v1/production.yml version.txt'
 
                     withCredentials([usernamePassword(credentialsId: 'github-repo', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASSWORD')]) {
                         sh '''
                             git config user.name '${GIT_USER}'
                             git config user.email 'franz.lopez@academy.opswerks.com'
-                            git commit -m "Add webapp-canary.yml, webapp.yml and version.txt files with updated version and background color"
+                            git commit -m "Add canary.yml, production.yml and version.txt files with updated version and background color"
                         '''
                     }
 
@@ -141,10 +141,10 @@ pipeline {
                             mc alias set myminio ${MINIO_URL} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
                         """
 
-                        echo 'Upload webapp.yml and webapp-canary.yml to MinIO bucket'
+                        echo 'Upload production.yml and canary.yml to MinIO bucket'
                         sh """
-                            mc cp manifests/v1/webapp.yml myminio/${MINIO_BUCKET}/webapp.yml
-                            mc cp manifests/v1/webapp-canary.yml myminio/${MINIO_BUCKET}/webapp-canary.yml
+                            mc cp manifests/v1/production.yml myminio/${MINIO_BUCKET}/${VERSION}/production.yml
+                            mc cp manifests/v1/canary.yml myminio/${MINIO_BUCKET}/${VERSION}/canary.yml
                         """
 
                         echo 'Files uploaded to MinIO successfully'
