@@ -16,7 +16,7 @@ spec:
       labels:
         app: simple-webapp
         type: production
-	color: {{color}}
+        color: {{color}}
     spec:
       containers:
         - image: 'jeromeevangelista/simple-webapp:{{tag}}'
