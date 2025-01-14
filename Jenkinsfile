@@ -9,9 +9,29 @@ pipeline {
         // MinIO Configuration (internal DNS)
         MINIO_URL = 'http://minio.minio:9000'  // Use internal DNS
         MINIO_BUCKET = 'simple-webapp'  // MinIO bucket name
+        
+        merged = "${params.merged}"
+        state = "${params.state}"
+        branch = "${params.branch}"
+        action = "${params.action}"
     }
 
     stages {
+        stage('Check PR Conditions') {
+            steps {
+                script {
+                    // Check if the conditions are met
+                    if (merged == 'true' && state == 'closed' && branch == 'main' && action == 'closed') {
+                        echo "PR was merged into 'main' and is closed. Proceeding with build."
+                    } else {
+                        echo "Conditions not met. Skipping build."
+                        currentBuild.result = 'ABORTED'
+                        return // Stop the pipeline if conditions are not met
+                    }
+                }
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 script {
