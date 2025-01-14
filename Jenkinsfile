@@ -9,7 +9,9 @@ pipeline {
         // MinIO Configuration (internal DNS)
         MINIO_URL = 'http://minio.minio:9000'  // Use internal DNS
         MINIO_BUCKET = 'simple-webapp'  // MinIO bucket name
-        
+    }
+
+    parameters {
         merged = "${params.merged}"
         state = "${params.state}"
         branch = "${params.branch}"
