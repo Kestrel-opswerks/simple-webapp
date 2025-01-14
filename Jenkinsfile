@@ -15,8 +15,6 @@ pipeline {
         stage('Check PR Conditions') {
             steps {
                 script {
-                    // Check if the conditions are met
-
                     echo "Merged value: ${env.merged}"
                     echo "State value: ${env.state}"
                     echo "Branch value: ${env.branch}"
@@ -26,8 +24,7 @@ pipeline {
                     } else {
                         echo "Conditions not met. Skipping build."
                         currentBuild.result = 'ABORTED'
-                        error('Stopping early…')
-                        return // Stop the pipeline if conditions are not met
+                        error('Stopping early, PR Conditions not met.')
                     }
                 }
             }
