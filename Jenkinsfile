@@ -17,10 +17,10 @@ pipeline {
                 script {
                     // Check if the conditions are met
 
-                    echo "${params.merged}"
-                    echo "${params.state}"
-                    echo "${params.branch}"
-                    echo "${params.action}"
+                    echo "${env.merged}"
+                    echo "${env.state}"
+                    echo "${env.branch}"
+                    echo "${env.action}"
                     if (merged == 'true' && state == 'closed' && branch == 'main' && action == 'closed') {
                         echo "PR was merged into 'main' and is closed. Proceeding with build."
                     } else {
