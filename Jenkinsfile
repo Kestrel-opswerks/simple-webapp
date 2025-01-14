@@ -31,6 +31,7 @@ pipeline {
                     } else {
                         echo "Conditions not met. Skipping build."
                         currentBuild.result = 'ABORTED'
+                        error('Stopping early…')
                         return // Stop the pipeline if conditions are not met
                     }
                 }
