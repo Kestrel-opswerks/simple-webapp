@@ -21,6 +21,11 @@ pipeline {
             steps {
                 script {
                     // Check if the conditions are met
+
+                    echo "$merged"
+                    echo "$state"
+                    echo "$branch"
+                    echo "$action"
                     if (merged == 'true' && state == 'closed' && branch == 'main' && action == 'closed') {
                         echo "PR was merged into 'main' and is closed. Proceeding with build."
                     } else {
