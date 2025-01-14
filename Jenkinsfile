@@ -11,23 +11,16 @@ pipeline {
         MINIO_BUCKET = 'simple-webapp'  // MinIO bucket name
     }
 
-    parameters {
-        merged = "${params.merged}"
-        state = "${params.state}"
-        branch = "${params.branch}"
-        action = "${params.action}"
-    }
-
     stages {
         stage('Check PR Conditions') {
             steps {
                 script {
                     // Check if the conditions are met
 
-                    echo "$merged"
-                    echo "$state"
-                    echo "$branch"
-                    echo "$action"
+                    echo "${params.merged}"
+                    echo "${params.state}"
+                    echo "${params.branch}"
+                    echo "${params.action}"
                     if (merged == 'true' && state == 'closed' && branch == 'main' && action == 'closed') {
                         echo "PR was merged into 'main' and is closed. Proceeding with build."
                     } else {
